@@ -87,18 +87,22 @@ const Details = () => {
         });
         setDocs(documents)
       })
-    projectFirestore.collection('cart')
-      .orderBy('name', 'desc')
-      .onSnapshot((snap) => {
-        let documents = [];
-        snap.forEach(doc => {
-          documents.push({
-            ...doc.data(),
-            id: doc.id
-          })
-        });
-        setCart(documents)
-      })
+      if (user) {
+        projectFirestore.collection('cart')
+            .orderBy('name', 'desc')
+            .where('uid', '==', user.uid)
+            .onSnapshot((snap) => {
+                let documents = [];
+                snap.forEach(doc => {
+                    documents.push({
+                        ...doc.data(),
+                        id: doc.id
+                    })
+                });
+                setCart(documents)
+            })
+    }
+
   }, [setDocs, setCart, id])
 
 

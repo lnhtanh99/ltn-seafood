@@ -153,10 +153,6 @@ export const adminItems = [
         value: 'add-menu',
     },
     {
-        label: 'Đơn hàng',
-        value: 'order',
-    },
-    {
         label: 'Doanh thu',
         value: 'total',
     },
@@ -172,15 +168,23 @@ export const adminItems = [
         label: 'Quản lý người dùng',
         value: 'users',
     },
+    {
+        label: 'Thực đơn',
+        value: 'menu',
+    },
 ]
 
 export const staffItems = [
     {
-        label: 'Đơn hàng',
+        label: 'Đơn hàng vận chuyển',
         value: 'order',
     },
     {
-        label: 'Doanh thu',
-        value: 'total',
-    }
+        label: 'Đơn hàng tại chỗ',
+        value: 'dinein',
+    },
+    {
+        label: 'Chỗ ngồi',
+        value: 'seat',
+    },
 ]

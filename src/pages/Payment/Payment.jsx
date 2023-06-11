@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import { useStyles } from './styles';
 import { Container, FormControlLabel, Link as MaterialLink, Radio, RadioGroup, FormHelperText, Typography, TextField, Grid, Box, FormControl, InputLabel, Select, MenuItem, Card, CardContent, CardActions, Button, CardMedia, Badge } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { projectFirestore } from '../../firebase/config';
+import { projectFirestore, projectAuth } from '../../firebase/config';
 import { useFormik } from 'formik';
 import { validationSchema } from '../../utils/validate';
 import { currencyFormat } from '../../utils/currencyFormat';
 import useGetProvinces from '../../services/province';
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const Payment = () => {
+    const [user] = useAuthState(projectAuth);
     const classes = useStyles();
     const [docs, setDocs] = useState([]);
     const { provinces } = useGetProvinces();
@@ -62,9 +64,9 @@ const Payment = () => {
 
 
     useEffect(() => {
-        if (localStorage.getItem('user')) {
+        if (user) {
             projectFirestore.collection('cart')
-                .where('uid', '==', JSON.parse(localStorage.getItem('user')).uid)
+                .where('uid', '==', user.uid)
                 .onSnapshot((snap) => {
                     let documents = [];
                     snap.forEach(doc => {

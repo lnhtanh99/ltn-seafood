@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useStyles } from './styles';
-import { Card, CardActions, CardContent, Link as MaterialLink, CardMedia, Container, Grid, IconButton, Button, Typography, Box, TextareaAutosize } from '@mui/material';
-import { projectFirestore } from '../../firebase/config';
+import { Card, CardActions, CardContent, Link as MaterialLink, CardMedia, Container, Grid, IconButton, Button, Typography, Box, TextareaAutosize, useRadioGroup } from '@mui/material';
+import { projectFirestore, projectAuth } from '../../firebase/config';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { Link as RouterLink } from 'react-router-dom';
 import { currencyFormat } from '../../utils/currencyFormat';
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const Cart = () => {
     const classes = useStyles();
+    const [user] = useAuthState(projectAuth);
     const [docs, setDocs] = useState([]);
     const [total, setTotal] = useState(0);
     const [note, setNote] = useState('')
@@ -46,9 +48,9 @@ const Cart = () => {
     }
 
     useEffect(() => {
-        if (localStorage.getItem('user')) {
+        if (user) {
             projectFirestore.collection('cart')
-                .where('uid', '==', JSON.parse(localStorage.getItem('user')).uid)
+                .where('uid', '==', user.uid)
                 .onSnapshot((snap) => {
                     let documents = [];
                     snap.forEach(doc => {
@@ -60,7 +62,7 @@ const Cart = () => {
                     setDocs(documents)
                 })
         }
-    }, [setDocs]);
+    }, [setDocs, user]);
 
     useEffect(() => {
         renderTotal()
@@ -155,14 +157,26 @@ const Cart = () => {
                                 color="warning"
                                 style={{ marginBottom: '10px' }}
                             >
-                                <MaterialLink
-                                    underline="none"
-                                    color="inherit"
-                                    component={RouterLink} to={'/payment'}
-                                    className={classes.links}
-                                >
-                                    Tiến hành đặt hàng
-                                </MaterialLink>
+                                {localStorage.getItem('role') === 'user' &&
+                                    <MaterialLink
+                                        underline="none"
+                                        color="inherit"
+                                        component={RouterLink} to={'/payment'}
+                                        className={classes.links}
+                                    >
+                                        Tiến hành đặt hàng
+                                    </MaterialLink>
+                                }
+                                {localStorage.getItem('role') === 'staff' &&
+                                    <MaterialLink
+                                        underline="none"
+                                        color="inherit"
+                                        component={RouterLink} to={'/staff/payment'}
+                                        className={classes.links}
+                                    >
+                                        Tiến hành đặt hàng
+                                    </MaterialLink>
+                                }
                             </Button>
                         </CardActions>
                     </Card>

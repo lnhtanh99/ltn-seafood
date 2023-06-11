@@ -87,19 +87,24 @@ const Item = ({ doc }) => {
                 setDocs(documents)
             })
 
-        projectFirestore.collection('cart')
-            .orderBy('name', 'desc')
-            .onSnapshot((snap) => {
-                let documents = [];
-                snap.forEach(doc => {
-                    documents.push({
-                        ...doc.data(),
-                        id: doc.id
-                    })
-                });
-                setCart(documents)
-            })
-    }, [setDocs, setCart]);
+        if (user) {
+            projectFirestore.collection('cart')
+                .orderBy('name', 'desc')
+                .where('uid', '==', user.uid)
+                .onSnapshot((snap) => {
+                    let documents = [];
+                    snap.forEach(doc => {
+                        documents.push({
+                            ...doc.data(),
+                            id: doc.id
+                        })
+                    });
+                    setCart(documents)
+                })
+        }
+
+    }, [setDocs, setCart, user]);
+
     return (
         <Grid item xs={12} sm={3} key={id}>
             <Card className={classes.card}>

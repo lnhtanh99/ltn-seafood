@@ -9,7 +9,7 @@ import { currencyFormat } from '../../../utils/currencyFormat'
 //react
 import { useState, useEffect } from 'react';
 
-const AdminOrder = () => {
+const StaffOrder = () => {
     const classes = useStyles();
     const statusArray = ["Chưa xác nhận", "Đã xác nhận", "Nhà hàng đang chuẩn bị món", "Đang giao hàng", "Đã giao hàng", "Đã hoàn thành"]
     const [page, setPage] = useState(0);
@@ -36,6 +36,11 @@ const AdminOrder = () => {
         if (event.target.value === 'Đã hoàn thành') {
             if (window.confirm('Hoàn tất đơn hàng?')) {
                 projectFirestore.collection('order').doc(id).update("checked", true)
+            } else {
+                projectFirestore.collection('order').doc(id).update({
+                    checked: false,
+                    status: 'Nhà hàng đang chuẩn bị món'
+                })
             }
         } else {
             projectFirestore.collection('order').doc(id).update({
@@ -48,6 +53,7 @@ const AdminOrder = () => {
     useEffect(() => {
         projectFirestore.collection('order')
             .orderBy('checked', 'asc')
+            .orderBy('date', 'desc')
             .onSnapshot((snap) => {
                 let documents = [];
                 snap.forEach(doc => {
@@ -68,6 +74,7 @@ const AdminOrder = () => {
                         <TableRow>
                             <TableCell className={classes.tableHeader} align="center">Tên</TableCell>
                             <TableCell className={classes.tableHeader} align="center">Số điện thoại</TableCell>
+                            <TableCell className={classes.tableHeader} align="center">Thời gian</TableCell>
                             <TableCell className={classes.tableHeader} align="center">Chi tiết đơn hàng</TableCell>
                             <TableCell className={classes.tableHeader} align="center">Địa chỉ</TableCell>
                             <TableCell className={classes.tableHeader} align="center">Ghi chú</TableCell>
@@ -81,10 +88,13 @@ const AdminOrder = () => {
                             ? docs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : docs
                         ).map((doc) => (
-                            <TableRow key={doc.id} >
+                            <TableRow
+                                key={doc.id}
+                                className={doc.checked ? classes.rowDone : null}
+                            >
                                 <TableCell align="center">{doc.name}</TableCell>
                                 <TableCell align="center">{doc.phone}</TableCell>
-
+                                <TableCell align="center">{doc.date}</TableCell>
                                 <TableCell>
                                     {doc.cart.map(cart => (
                                         <Box key={cart.id}>
@@ -139,4 +149,4 @@ const AdminOrder = () => {
     )
 }
 
-export default AdminOrder
+export default StaffOrder

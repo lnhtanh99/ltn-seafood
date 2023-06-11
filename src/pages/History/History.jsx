@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useStyles } from './styles';
-import { projectFirestore } from '../../firebase/config';
+import { projectFirestore, projectAuth } from '../../firebase/config';
 import { Container, Table as MuiTable, TableContainer, TextField, MenuItem, Paper, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, Typography, Box } from '@mui/material';
 import { currencyFormat } from '../../utils/currencyFormat'
-
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const History = () => {
     const classes = useStyles();
     const [docs, setDocs] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [user] = useAuthState(projectAuth);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -21,21 +22,24 @@ const History = () => {
     };
 
     useEffect(() => {
-        projectFirestore.collection('order')
-            .where('userID', '==', JSON.parse(localStorage.getItem('user')).uid)
-            .where('status', '==', 'Đã hoàn thành')
-            .orderBy('checked', 'asc')
-            .onSnapshot((snap) => {
-                let documents = [];
-                snap.forEach(doc => {
-                    documents.push({
-                        ...doc.data(),
-                        id: doc.id
-                    })
-                });
-                setDocs(documents)
-            })
-    }, [setDocs])
+        if (user) {
+            projectFirestore.collection('order')
+                .where('userID', '==', user.uid)
+                .where('status', '==', 'Đã hoàn thành')
+                .orderBy('checked', 'asc')
+                .onSnapshot((snap) => {
+                    let documents = [];
+                    snap.forEach(doc => {
+                        documents.push({
+                            ...doc.data(),
+                            id: doc.id
+                        })
+                    });
+                    setDocs(documents)
+                })
+        }
+
+    }, [setDocs, user])
     return (
         <Container>
             <TableContainer component={Paper} className={classes.container}>

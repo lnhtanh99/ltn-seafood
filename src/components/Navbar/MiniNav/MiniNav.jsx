@@ -26,7 +26,7 @@ const MiniNav = () => {
             <Container>
                 <Toolbar>
                     <Box className={classes.wrapper} sx={{ flexGrow: 1 }}>
-                        {!(localStorage.getItem('role') === 'admin' || localStorage.getItem('role') === 'staff')
+                        {!(localStorage.getItem('role') === 'admin')
                             &&
                             <>
                                 <Button
@@ -99,7 +99,7 @@ const MiniNav = () => {
                                             <MaterialLink
                                                 underline="none"
                                                 color="inherit"
-                                                component={RouterLink} to={`/user/${item.value}`}
+                                                component={RouterLink} to={`/staff/${item.value}`}
                                             >
                                                 {item.label}
                                             </MaterialLink>

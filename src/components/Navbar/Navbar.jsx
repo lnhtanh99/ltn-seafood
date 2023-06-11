@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Toolbar, Typography, Link as MaterialLink, Box, IconButton, InputBase, Badge, Container } from '@mui/material';
+import { AppBar, Avatar, Toolbar, Typography, Link as MaterialLink, Box, IconButton, Badge, Container, InputAdornment, TextField } from '@mui/material';
 import logo from '../../assets/logo-2.png'
 import deliveryImg from '../../assets/giaohang2h_6984c4a90861405ab3c35f77edb41578.webp'
 import { useStyles } from './styles';
@@ -7,7 +7,7 @@ import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MiniNav from './MiniNav/MiniNav';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthState } from "react-firebase-hooks/auth";
 import firebase from 'firebase/compat/app'
 import { projectAuth, projectFirestore } from '../../firebase/config';
@@ -18,46 +18,7 @@ const Navbar = () => {
     const [user] = useAuthState(projectAuth);
     const [docs, setDocs] = useState([]);
     const [userCart, setUserCart] = useState([]);
-
-    const Search = styled('div')(({ theme }) => ({
-        position: 'relative',
-        color: "black",
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: "white",
-        '&:hover': {
-            backgroundColor: alpha(theme.palette.common.white, 0.85),
-        },
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
-            width: 'auto',
-        },
-    }));
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }));
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-        color: 'inherit',
-        '& .MuiInputBase-input': {
-            padding: theme.spacing(1, 1, 1, 0),
-            // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-            transition: theme.transitions.create('width'),
-            width: '100%',
-            [theme.breakpoints.up('sm')]: {
-                width: '12ch',
-                '&:focus': {
-                    width: '20ch',
-                },
-            },
-        },
-    }));
+    const navigate = useNavigate();
 
     const signInWithGoogle = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -67,7 +28,7 @@ const Navbar = () => {
                 if (check) {
                     localStorage.setItem('user', JSON.stringify(check));
                     if (check.role === 'admin') {
-                        localStorage.setItem('role', 'admin'); //
+                        localStorage.setItem('role', 'admin'); 
                     } else if (check.role === 'staff') {
                         localStorage.setItem('role', 'staff');
                     } else {
@@ -102,6 +63,8 @@ const Navbar = () => {
                 })
         }
     }
+
+
     useEffect(() => {
         projectFirestore.collection('users')
             .orderBy('name', 'desc')
@@ -130,7 +93,8 @@ const Navbar = () => {
                     setUserCart(documents)
                 })
         }
-    }, [setUserCart, setDocs])
+    }, [setUserCart, setDocs, user])
+
     return (
         <div>
             <AppBar
@@ -155,15 +119,6 @@ const Navbar = () => {
                                 className={classes.logo}
                             />
                         </MaterialLink>
-                        <Search >
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search>
                         <Box sx={{ flexGrow: 1 }} />
                         <Box className={classes.navItem}>
                             <Typography >
@@ -206,8 +161,8 @@ const Navbar = () => {
                             </IconButton>
 
                         }
-                        
-                        {localStorage.getItem('role') === 'user' &&
+
+                        {(localStorage.getItem('role') === 'user' ||localStorage.getItem('role') === 'staff') &&
                             <IconButton
                                 edge="end"
                                 aria-label="account of current user"

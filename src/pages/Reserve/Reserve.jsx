@@ -15,7 +15,7 @@ const Reserve = () => {
             description: '',
             date: '',
             hours: '',
-            number: 1
+            number: 1,
         },
         validationSchema: validationReserve,
         onSubmit: values => {
@@ -25,7 +25,8 @@ const Reserve = () => {
                 description: values.description,
                 hours: values.hours,
                 number: values.number,
-                date: values.date
+                date: values.date,
+                checked: false
             })
             alert('Đặt bàn thành công!');
             navigate('/');

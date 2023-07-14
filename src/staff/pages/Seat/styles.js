@@ -9,6 +9,10 @@ export const useStyles = makeStyles((theme) => ({
         margin: '20px 0',
     },
     button: {
+        display: 'flex',
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center',
         padding: '10px 30px',
         margin: '30px',
         backgroundColor: theme.palette.primary.main,
@@ -16,6 +20,10 @@ export const useStyles = makeStyles((theme) => ({
         cursor: 'pointer'
     },
     buttonRed: {
+        display: 'flex',
+        position: 'relative',
+        alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: theme.palette.secondary.main,
         color: 'white',
         padding: '10px 30px',
@@ -25,5 +33,9 @@ export const useStyles = makeStyles((theme) => ({
     form: {
         width: '200px',
         margin: '0 auto'
+    },
+    clearIcon: {
+        position: 'absolute',
+        right: 10
     }
 }));

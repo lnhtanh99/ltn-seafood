@@ -2,8 +2,7 @@ import { useStyles } from './styles';
 import { useEffect, useState } from 'react'
 
 import { Box, Button, Avatar, Container, Grid, Typography, TextField } from '@mui/material';
-import WeekendIcon from '@mui/icons-material/Weekend';
-
+import ClearIcon from '@mui/icons-material/Clear';
 import { projectFirestore } from '../../../firebase/config';
 import { currencyFormat } from '../../../utils/currencyFormat';
 
@@ -19,13 +18,13 @@ const Seat = () => {
             if (available === true) {
                 projectFirestore.collection('seat').doc(id).update({
                     total: seatTotal.total,
-                    available: false
+                    available: false,
                 });
             } else {
                 if (window.confirm('Thanh toán đơn hàng?')) {
                     projectFirestore.collection('seat').doc(id).update({
                         total: 0,
-                        available: true
+                        available: true,
                     });
                     projectFirestore.collection('dinein').doc(seatTotal.id).update({
                         checked: true
@@ -35,13 +34,22 @@ const Seat = () => {
 
         }
     }
-
+    const handleClear = (id) => {
+        if (window.confirm('Are you sure you want to delete?')) {
+            projectFirestore.collection('seat').doc(id).delete();
+        }
+    }
     const handleAddSeat = () => {
-        projectFirestore.collection('seat').add({
-            number: seatNumber,
-            available: true,
-            total: 0,
-        })
+        if (seatNumber > 0) {
+            projectFirestore.collection('seat').add({
+                number: seatNumber,
+                available: true,
+                total: 0,
+            })
+        } else {
+            alert('Số bàn phải lớn hơn 0!')
+        }
+
     }
 
     useEffect(() => {
@@ -90,15 +98,18 @@ const Seat = () => {
                             className={seat.available ? classes.button : classes.buttonRed}
                             onClick={() => handleSeat(seat.available, seat.number, seat.id)}
                         >
-                            <Typography>
-                                Seat {seat.number}
-                            </Typography>
-                            <Typography>
-                                Time: {seat.date}
-                            </Typography>
-                            <Typography>
-                                Tổng {currencyFormat(seat.total)} đ
-                            </Typography>
+                            <Box>
+                                <Typography>
+                                    Seat {seat.number}
+                                </Typography>
+                                <Typography>
+                                    Tổng {currencyFormat(seat.total)} đ
+                                </Typography>
+                            </Box>
+                            <ClearIcon
+                                className={classes.clearIcon}
+                                onClick={() => handleClear(seat.id)}
+                            />
                         </Box>
                     </Grid>
                 )}

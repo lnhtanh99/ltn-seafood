@@ -30,6 +30,7 @@ import Results from './pages/Results/Results';
 import Seat from './staff/pages/Seat/Seat';
 import StaffPayment from './staff/pages/StaffPayment/StaffPayment';
 import DineIn from './staff/pages/DineIn/DineIn';
+import StaffReserve from './staff/pages/StaffReserve/StaffReserve';
 function App() {
   let theme = createTheme();
 
@@ -39,7 +40,6 @@ function App() {
         <ThemeProvider theme={theme}>
           <Navbar />
           <Routes>
-
             {/* user path */}
             <Route exact path='/' element={<Main />} />
             <Route exact path='/menu/:category' element={<Menu />} />
@@ -65,6 +65,7 @@ function App() {
             <Route exact path='/staff/payment' element={<StaffPayment />} />
             <Route exact path='/staff/order' element={<StaffOrder />} />
             <Route exact path='/staff/dinein' element={<DineIn />} />
+            <Route exact path='/staff/reserve' element={<StaffReserve />} />
           </Routes>
           <Footer />
         </ThemeProvider>

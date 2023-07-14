@@ -187,4 +187,8 @@ export const staffItems = [
         label: 'Chỗ ngồi',
         value: 'seat',
     },
+    {
+        label: 'Khách đặt bàn',
+        value: 'reserve',
+    },
 ]
